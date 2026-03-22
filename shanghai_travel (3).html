@@ -1,0 +1,2748 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>上海旅遊手冊</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;600&family=DM+Serif+Display:ital@0;1&family=Noto+Sans+TC:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f5f0e8;
+    --paper-dark: #ede7d9;
+    --ink: #1a1a18;
+    --ink-light: #6b6458;
+    --ink-faint: #b0a898;
+    --accent: #c0392b;
+    --accent-soft: #e8c4b8;
+    --tag-food: #d4a853;
+    --tag-dessert: #a87ab3;
+    --tag-drink: #5b8fa8;
+    --tag-souvenir: #7a9e7e;
+    --tag-shopping: #8a7fb5;
+    --tag-snack: #c07850;
+    --tag-attraction: #5a8a7a;
+    --border: #d4cabb;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+  }
+
+  /* ── Header 背景圖 ── */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 32px 48px 24px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+  header.has-bg {
+    border-bottom-color: rgba(255,255,255,0.2);
+  }
+  header.has-bg h1,
+  header.has-bg .header-tag,
+  header.has-bg .header-sub { color: white; text-shadow: 0 1px 4px rgba(0,0,0,0.4); }
+  header.has-bg h1 span { color: rgba(255,255,255,0.85); }
+  header.has-bg .header-tag { color: rgba(255,255,255,0.7); }
+  #header-bg-img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    filter: brightness(0.7) sepia(15%);
+  }
+  header > * { position: relative; z-index: 1; }
+  .header-bg-btn {
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.4);
+    color: white;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 11px;
+    padding: 4px 10px;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    transition: background 0.2s;
+    margin-top: 6px;
+    display: block;
+  }
+  .header-bg-btn:hover { background: rgba(255,255,255,0.35); }
+  .header-bg-btn-dark {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--ink-faint);
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 11px;
+    padding: 4px 10px;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    transition: all 0.2s;
+    margin-top: 6px;
+    display: block;
+  }
+  .header-bg-btn-dark:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── 儲存編輯按鈕 ── */
+  .save-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+  }
+  .save-btn:hover { opacity: 0.85; }
+  .save-confirm {
+    font-size: 11px; color: #4a9a4a;
+    letter-spacing: 0.05em;
+    opacity: 0; transition: opacity 0.3s;
+    margin-top: 4px; text-align: right;
+  }
+  .save-confirm.show { opacity: 1; }
+
+  /* ── 候補區摺疊 ── */
+  .pool-collapsed .spot-list,
+  .pool-collapsed .add-spot-row { display: none; }
+  .pool-toggle-btn {
+    background: none; border: none; cursor: pointer;
+    font-size: 13px; color: var(--ink-faint);
+    padding: 0 6px 0 0; line-height: 1;
+    transition: color 0.2s, transform 0.25s;
+    transform-origin: center; flex-shrink: 0;
+  }
+  .pool-toggle-btn.collapsed { transform: rotate(-90deg); }
+  .pool-toggle-btn:hover { color: var(--ink-light); }
+  .header-left {}
+  .header-tag {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 6px;
+  }
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.4rem;
+    line-height: 1;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  h1 span {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .header-sub {
+    font-size: 12px;
+    color: var(--ink-light);
+    margin-top: 6px;
+    letter-spacing: 0.05em;
+  }
+  .add-day-btn {
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    padding: 10px 20px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+  .add-day-btn:hover { background: var(--accent); }
+
+  /* ── 模式切換 ── */
+  .mode-toggle-wrap {
+    display: flex; flex-direction: column; align-items: flex-end; gap: 6px;
+  }
+  .mode-toggle {
+    display: flex; align-items: center;
+    border: 1px solid var(--border);
+    overflow: hidden; flex-shrink: 0;
+  }
+  .mode-btn {
+    padding: 7px 14px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 11px; letter-spacing: 0.08em;
+    background: none; border: none; cursor: pointer;
+    color: var(--ink-faint); transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .mode-btn.active { background: var(--ink); color: var(--paper); }
+
+  /* ── Layout ── */
+  main {
+    padding: 32px 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  /* ── Day Block ── */
+  .day-block {
+    border: 1px solid var(--border);
+    background: #faf7f2;
+  }
+  .day-header {
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--paper-dark);
+  }
+  /* 第一行：拖曳把手 + 摺疊 + Day N + 日期 + 動作按鈕 */
+  .day-header-row1 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .day-label {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .day-date-input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--ink-faint);
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    padding: 2px 4px;
+    width: 90px;
+    outline: none;
+  }
+  .day-date-input:focus { border-bottom-color: var(--accent); }
+  body.viewer-mode .day-date-input { border-bottom-color: transparent; pointer-events: none; }
+  .day-actions { display: flex; gap: 6px; flex-shrink: 0; margin-left: auto; }
+  .day-actions button {
+    background: none;
+    border: 1px solid var(--border);
+    padding: 3px 10px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 11px;
+    color: var(--ink-light);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .day-actions button:hover { border-color: var(--accent); color: var(--accent); }
+  .day-actions .del-day { color: #c0392b44; border-color: #c0392b44; }
+  .day-actions .del-day:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* ── Spot List ── */
+  .spot-list {
+    padding: 8px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    min-height: 60px;
+  }
+  .spot-list.drag-over { background: #f0ece4; }
+
+  /* ── Spot Card：統一用左文右圖漸變排版 ── */
+  .spot-card {
+    display: block;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+    min-height: 120px;
+    transition: background 0.15s;
+    padding-left: 20px; /* 讓出 handle 空間 */
+  }
+  .spot-card:last-child { border-bottom: none; }
+  .spot-card.dragging { opacity: 0.4; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+  .spot-card.drag-target { background: var(--accent-soft); }
+
+  /* 圖片：絕對定位右側，左邊漸變透明 */
+  .spot-img {
+    position: absolute;
+    right: 0; top: 0;
+    width: 45%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: sepia(10%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 25%, rgba(0,0,0,1) 65%);
+    mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 25%, rgba(0,0,0,1) 65%);
+  }
+  .spot-img-placeholder {
+    position: absolute;
+    right: 0; top: 0;
+    width: 35%;
+    height: 100%;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    color: var(--ink-faint);
+    opacity: 0.35;
+  }
+
+  /* 文字區：左側，佔 60% 寬 */
+  .spot-body {
+    position: relative;
+    z-index: 1;
+    width: 65%;
+    padding: 14px 14px 8px 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+  }
+  .spot-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+  /* 右側欄隱藏（統一用 spot-body 內的按鈕） */
+  .spot-right { display: none !important; }
+
+  /* 桌機：note-actions 顯示 */
+  .spot-note-actions { display: flex; }
+
+  /* 桌機/手機 tag 都在 spot-top 顯示 */
+  .spot-top .spot-tag { display: inline-block; }
+
+  /* ── 路線摘要：換行顯示全部 ── */
+  .day-route-summary {
+    font-size: 11px;
+    color: var(--ink-faint);
+    letter-spacing: 0.02em;
+    line-height: 1.7;
+    margin-top: 6px;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 600px) {
+    header { padding: 20px 16px 16px; }
+    h1 { font-size: 1.8rem; }
+    main { padding: 16px 12px; gap: 24px; }
+    .day-header { padding: 12px 14px; flex-wrap: wrap; gap: 6px; }
+    .day-header-left { gap: 8px; }
+    .day-label { font-size: 1rem; }
+    .day-date-input { width: 110px; font-size: 13px; }
+    .day-actions button { padding: 5px 10px; font-size: 11px; }
+    .spot-list { padding: 0; }
+    .add-spot-row { padding: 10px 14px; }
+    .spot-body { width: 62%; padding: 12px 12px 8px 14px; }
+    .spot-img { width: 52%; }
+    .spot-img-placeholder { width: 40%; font-size: 28px; }
+    .spot-name { font-size: 15px; }
+    .spot-note { font-size: 13px; }
+    .spot-addr { font-size: 11px; }
+    .btn-note-view { font-size: 12px !important; min-height: 36px !important; }
+    .btn-remove { font-size: 13px !important; min-height: 36px !important; }
+    footer { padding: 16px; font-size: 10px; }
+  }
+  .spot-name {
+    font-family: 'Noto Serif TC', serif;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  .spot-badge {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 0;
+    letter-spacing: 0.05em;
+    font-weight: 400;
+    white-space: nowrap;
+  }
+  .badge-連鎖 { background: #ddeedd; color: #3a6b3a; border: 1px solid #aacaaa; }
+  .badge-外送 { background: #dde8f5; color: #2a4f7a; border: 1px solid #aabedd; }
+
+  .spot-note {
+    font-size: 12px;
+    color: var(--ink-light);
+    line-height: 1.5;
+    margin-top: 2px;
+  }
+  .spot-addr {
+    font-size: 11px;
+    color: var(--ink-faint);
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .spot-addr a {
+    color: var(--ink-faint);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .spot-addr a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+  .spot-addr-icon { font-size: 10px; }
+
+  /* 桌機筆記按鈕（右側欄） */
+  .btn-note-view-desktop {
+    border: 1px solid var(--border);
+    background: none;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 11px;
+    color: var(--ink-light);
+    padding: 4px 8px;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    transition: border-color 0.2s, color 0.2s;
+    white-space: nowrap;
+  }
+  .btn-note-view-desktop:hover { border-color: var(--accent); color: var(--accent); }
+
+  .spot-tag {
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    padding: 3px 6px;
+    color: white;
+    font-weight: 400;
+    white-space: nowrap;
+    text-align: center;
+    max-width: 52px;
+    word-break: keep-all;
+    line-height: 1.4;
+  }
+  .tag-美食 { background: var(--tag-food); }
+  .tag-甜點 { background: var(--tag-dessert); }
+  .tag-飲料 { background: var(--tag-drink); }
+  .tag-伴手禮 { background: var(--tag-souvenir); }
+  .tag-逛街 { background: var(--tag-shopping); }
+  .tag-點心 { background: var(--tag-snack); }
+  .tag-景點 { background: var(--tag-attraction); }
+
+  .spot-right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 6px;
+    border-left: 1px solid var(--border);
+    width: 56px;
+    flex-shrink: 0;
+    min-height: 90px;
+    overflow: visible;
+  }
+  .spot-right button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: var(--ink-faint);
+    padding: 6px;
+    transition: color 0.2s;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    min-height: 36px;
+  }
+  .spot-right button:hover { color: var(--accent); }
+
+  /* 筆記＋刪除 橫排 */
+  .spot-note-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+  }
+  .btn-note-view {
+    border: 1px solid var(--border) !important;
+    background: none !important;
+    font-family: 'Noto Sans TC', sans-serif !important;
+    font-size: 11px !important;
+    color: var(--ink-light) !important;
+    padding: 4px 10px !important;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    transition: border-color 0.2s, color 0.2s;
+    min-width: unset !important;
+    min-height: unset !important;
+    white-space: nowrap !important;
+    line-height: 1.4 !important;
+    display: inline-block !important;
+  }
+  .btn-note-view:hover { border-color: var(--accent) !important; color: var(--accent) !important; }
+  .btn-remove {
+    background: none !important;
+    border: none !important;
+    font-size: 12px !important;
+    color: #c0392b55 !important;
+    cursor: pointer;
+    padding: 4px !important;
+    min-width: unset !important;
+    min-height: unset !important;
+    transition: color 0.2s;
+  }
+  .btn-remove:hover { color: var(--accent) !important; }
+
+  /* ── Note View Overlay（閱讀模式）── */
+  .note-overlay {
+    position: fixed; inset: 0;
+    background: rgba(26,26,24,0.55);
+    z-index: 300;
+    display: flex; align-items: flex-end; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.25s;
+  }
+  .note-overlay.open { opacity: 1; pointer-events: all; }
+  .note-sheet {
+    background: var(--paper);
+    border-top: 2px solid var(--ink);
+    width: 100%; max-width: 600px;
+    max-height: 90vh;
+    display: flex; flex-direction: column;
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(0.32,0.72,0,1);
+  }
+  .note-overlay.open .note-sheet { transform: translateY(0); }
+
+  .note-sheet-handle {
+    width: 36px; height: 4px; background: var(--border);
+    border-radius: 2px; margin: 10px auto 0; cursor: pointer; flex-shrink: 0;
+  }
+  .note-sheet-header {
+    padding: 14px 20px 0; flex-shrink: 0;
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+  }
+  .note-sheet-close {
+    background: none; border: none; cursor: pointer;
+    font-size: 18px; color: var(--ink-faint); padding: 0; line-height: 1;
+    transition: color 0.2s; flex-shrink: 0; margin-top: 2px;
+  }
+  .note-sheet-close:hover { color: var(--accent); }
+
+  .note-sheet-body {
+    overflow-y: auto; padding: 0 20px 24px; flex: 1;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* hero image */
+  .note-hero {
+    width: 100%; max-height: 200px; object-fit: cover;
+    display: block; filter: sepia(8%);
+    margin-bottom: 18px; border-bottom: 1px solid var(--border);
+  }
+
+  /* spot name in note */
+  .note-spot-name {
+    font-family: 'Noto Serif TC', serif;
+    font-weight: 600;
+    font-size: 1.4rem; line-height: 1.3;
+    color: var(--ink); margin-bottom: 10px;
+  }
+  .note-spot-name span { font-style: normal; color: var(--ink); }
+
+  /* tags row */
+  .note-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+
+  /* info row */
+  .note-addr-row {
+    display: flex; align-items: flex-start; gap: 6px;
+    margin-bottom: 16px; padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .note-addr-icon { font-size: 13px; margin-top: 1px; flex-shrink: 0; }
+  .note-addr-text { font-size: 13px; color: var(--ink-light); line-height: 1.5; }
+  .note-addr-text a {
+    color: var(--accent); text-decoration: none;
+    border-bottom: 1px solid var(--accent-soft);
+  }
+
+  /* short note */
+  .note-short {
+    font-size: 14px; color: var(--ink-light);
+    line-height: 1.7; margin-bottom: 18px; font-style: italic;
+  }
+
+  /* detail note */
+  .note-detail-label {
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-faint); margin-bottom: 8px; display: block;
+  }
+  .note-detail-content {
+    font-size: 14px; color: var(--ink); line-height: 1.85;
+    white-space: pre-wrap; margin-bottom: 18px;
+  }
+
+  /* ── 參考圖片輪播 ── */
+  .note-img-carousel {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    margin-top: 12px;
+    padding-bottom: 8px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  .note-img-carousel::-webkit-scrollbar { height: 4px; }
+  .note-img-carousel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .note-img-slide {
+    position: relative;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    width: 75vw;
+    max-width: 320px;
+    cursor: zoom-in;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .note-img-slide img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.2s;
+  }
+  .note-img-slide:hover img { transform: scale(1.02); }
+  .note-img-label {
+    position: absolute;
+    bottom: 0; right: 0; left: 0;
+    background: linear-gradient(to top, rgba(26,26,24,0.72) 0%, transparent 100%);
+    padding: 18px 8px 5px;
+    font-size: 10px;
+    color: rgba(255,255,255,0.9);
+    letter-spacing: 0.04em;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* ── Lightbox ── */
+  .lightbox-overlay {
+    position: fixed; inset: 0; z-index: 500;
+    background: rgba(10,10,10,0.93);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.2s;
+  }
+  .lightbox-overlay.open { opacity: 1; pointer-events: all; }
+  .lightbox-img {
+    max-width: 95vw; max-height: 80vh;
+    object-fit: contain; display: block;
+  }
+  .lightbox-label {
+    color: rgba(255,255,255,0.6);
+    font-size: 12px; margin-top: 12px;
+    letter-spacing: 0.06em;
+  }
+  .lightbox-close {
+    position: absolute; top: 16px; right: 20px;
+    background: none; border: none; color: rgba(255,255,255,0.7);
+    font-size: 28px; cursor: pointer; line-height: 1;
+    transition: color 0.15s;
+  }
+  .lightbox-close:hover { color: white; }
+  .lightbox-nav {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    background: rgba(255,255,255,0.12); border: none;
+    color: white; font-size: 24px; cursor: pointer;
+    padding: 12px 16px; transition: background 0.15s;
+    line-height: 1;
+  }
+  .lightbox-nav:hover { background: rgba(255,255,255,0.25); }
+  .lightbox-prev { left: 12px; }
+  .lightbox-next { right: 12px; }
+  .lightbox-counter {
+    position: absolute; bottom: 16px;
+    color: rgba(255,255,255,0.5); font-size: 12px; letter-spacing: 0.1em;
+  }
+
+  /* ── 詳情 Bottom Sheet ── */
+  .detail-overlay {
+    position: fixed; inset: 0;
+    background: rgba(26,26,24,0.5);
+    z-index: 200;
+    display: flex; align-items: flex-end; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.25s;
+  }
+  .detail-overlay.open { opacity: 1; pointer-events: all; }
+  .detail-panel {
+    background: var(--paper);
+    border-top: 1px solid var(--border);
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    width: 100%; max-width: 680px;
+    max-height: 92vh;
+    display: flex; flex-direction: column;
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(0.32,0.72,0,1);
+    border-radius: 0;
+  }
+  .detail-overlay.open .detail-panel { transform: translateY(0); }
+
+  /* drag handle bar */
+  .sheet-handle {
+    width: 36px; height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin: 10px auto 0;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  .detail-panel-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    padding: 14px 20px 12px; border-bottom: 1px solid var(--border);
+    gap: 12px; flex-shrink: 0;
+  }
+  .detail-panel-header h2 {
+    font-family: 'Noto Serif TC', serif; font-weight: 600;
+    font-size: 1.05rem; line-height: 1.4; color: var(--ink);
+  }
+  .detail-panel-header .close-btn {
+    background: none; border: none; cursor: pointer;
+    font-size: 18px; color: var(--ink-faint); padding: 0; line-height: 1;
+    transition: color 0.2s; flex-shrink: 0;
+  }
+  .detail-panel-header .close-btn:hover { color: var(--accent); }
+
+  .detail-panel-body {
+    overflow-y: auto; padding: 16px 20px 20px; flex: 1;
+    display: flex; flex-direction: column; gap: 18px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* section label */
+  .ds-label {
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-faint); display: block; margin-bottom: 6px;
+  }
+  .ds-input {
+    width: 100%;
+    background: var(--paper-dark); border: 1px solid var(--border);
+    padding: 9px 12px; font-family: 'Noto Sans TC', sans-serif;
+    font-size: 14px; color: var(--ink); outline: none;
+    transition: border-color 0.2s;
+  }
+  .ds-input:focus { border-color: var(--accent); }
+  .ds-textarea {
+    width: 100%; min-height: 110px;
+    background: var(--paper-dark); border: 1px solid var(--border);
+    padding: 9px 12px; font-family: 'Noto Sans TC', sans-serif;
+    font-size: 14px; color: var(--ink); line-height: 1.7;
+    resize: vertical; outline: none; transition: border-color 0.2s;
+  }
+  .ds-textarea:focus { border-color: var(--accent); }
+  .ds-select {
+    flex: 1;
+    background: var(--paper-dark); border: 1px solid var(--border);
+    padding: 9px 10px; font-family: 'Noto Sans TC', sans-serif;
+    font-size: 14px; color: var(--ink); outline: none;
+  }
+  .ds-row { display: flex; gap: 10px; }
+  .ds-col { flex: 1; }
+
+  /* main img in detail */
+  .detail-main-img-wrap { position: relative; display: inline-block; }
+  .detail-main-img-wrap img {
+    width: 100%; max-height: 180px; object-fit: cover;
+    border: 1px solid var(--border); filter: sepia(8%); display: block;
+  }
+  .detail-main-img-wrap .change-img-btn {
+    position: absolute; bottom: 8px; right: 8px;
+    background: rgba(26,26,24,0.65); color: white; border: none;
+    font-size: 11px; padding: 4px 10px; cursor: pointer;
+    font-family: 'Noto Sans TC', sans-serif; letter-spacing: 0.05em;
+  }
+
+  /* extra imgs */
+  .detail-extra-imgs {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px;
+  }
+  .detail-extra-imgs .thumb-wrap {
+    position: relative; display: inline-block;
+  }
+  .detail-extra-imgs img {
+    height: 90px; width: auto; max-width: 140px;
+    object-fit: cover; border: 1px solid var(--border); display: block;
+  }
+  .detail-extra-imgs .rm-btn {
+    position: absolute; top: 2px; right: 2px;
+    background: rgba(26,26,24,0.65); border: none;
+    color: white; font-size: 10px; cursor: pointer;
+    padding: 1px 5px; line-height: 1.5;
+  }
+  .thumb-label {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(to top, rgba(26,26,24,0.65) 0%, transparent 100%);
+    font-size: 9px; color: rgba(255,255,255,0.85);
+    padding: 10px 4px 3px; text-align: right;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .detail-upload-btn {
+    background: none; border: 1px dashed var(--border);
+    padding: 8px 14px; font-family: 'Noto Sans TC', sans-serif;
+    font-size: 12px; color: var(--ink-faint); cursor: pointer;
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .detail-upload-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .detail-panel-footer {
+    padding: 12px 20px; border-top: 1px solid var(--border);
+    display: flex; justify-content: flex-end; gap: 10px; flex-shrink: 0;
+  }
+
+  /* ── custom select with + button ── */
+  .select-with-add { display: flex; gap: 6px; align-items: center; }
+  .select-with-add select { flex: 1; }
+  .btn-add-option {
+    background: none; border: 1px solid var(--border);
+    width: 28px; height: 28px; cursor: pointer; font-size: 16px;
+    color: var(--ink-faint); display: flex; align-items: center;
+    justify-content: center; flex-shrink: 0; transition: all 0.2s;
+    padding: 0; line-height: 1;
+  }
+  .btn-add-option:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── img upload in modal ── */
+  .img-input-group { display: flex; flex-direction: column; gap: 6px; }
+  .img-tab-bar { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 8px; }
+  .img-tab {
+    padding: 5px 14px; font-size: 11px; letter-spacing: 0.08em;
+    cursor: pointer; color: var(--ink-faint); border-bottom: 2px solid transparent;
+    transition: all 0.15s; user-select: none;
+  }
+  .img-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .img-pane { display: none; }
+  .img-pane.active { display: block; }
+  .file-drop-zone {
+    border: 1px dashed var(--border); padding: 16px; text-align: center;
+    cursor: pointer; transition: background 0.15s;
+    font-size: 12px; color: var(--ink-faint);
+  }
+  .file-drop-zone:hover { background: var(--paper-dark); }
+
+  /* ── Unassigned Pool ── */
+  .pool-section {
+    border: 1px dashed var(--border);
+    background: transparent;
+  }
+  .pool-header {
+    padding: 14px 24px;
+    border-bottom: 1px dashed var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .pool-title {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .pool-count {
+    font-size: 11px;
+    color: var(--ink-faint);
+  }
+
+  /* ── Add Spot ── */
+  .add-spot-row {
+    padding: 12px 24px;
+    border-top: 1px dashed var(--border);
+  }
+  .add-spot-btn {
+    background: none;
+    border: none;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 12px;
+    color: var(--ink-faint);
+    cursor: pointer;
+    padding: 0;
+    letter-spacing: 0.1em;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.2s;
+  }
+  .add-spot-btn:hover { color: var(--accent); }
+
+  /* ── Add Spot Modal ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(26,26,24,0.55);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    padding: 32px;
+    width: 500px;
+    max-width: 95vw;
+    transform: translateY(12px);
+    transition: transform 0.2s;
+  }
+  .modal-overlay.open .modal { transform: none; }
+  .modal h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+    color: var(--ink);
+  }
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .form-grid .full { grid-column: 1 / -1; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-group label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--ink-light);
+    text-transform: uppercase;
+  }
+  .form-group input, .form-group select, .form-group textarea {
+    background: var(--paper-dark);
+    border: 1px solid var(--border);
+    padding: 8px 10px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 13px;
+    color: var(--ink);
+    outline: none;
+    resize: vertical;
+    transition: border-color 0.2s;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: var(--accent);
+  }
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  .btn-cancel {
+    background: none;
+    border: 1px solid var(--border);
+    padding: 8px 20px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    color: var(--ink-light);
+    transition: all 0.2s;
+  }
+  .btn-cancel:hover { border-color: var(--ink-light); }
+  .btn-confirm {
+    background: var(--ink);
+    border: 1px solid var(--ink);
+    padding: 8px 20px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    color: var(--paper);
+    transition: background 0.2s;
+  }
+  .btn-confirm:hover { background: var(--accent); border-color: var(--accent); }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center;
+    padding: 24px;
+    font-size: 11px;
+    color: var(--ink-faint);
+    letter-spacing: 0.1em;
+    border-top: 1px solid var(--border);
+    margin-top: 20px;
+  }
+
+  .drag-hint {
+    font-size: 11px;
+    color: var(--ink-faint);
+    letter-spacing: 0.05em;
+    text-align: center;
+    padding: 16px;
+    display: none;
+  }
+  .spot-list:empty + .drag-hint,
+  .spot-list.empty-list + .drag-hint { display: block; }
+  .empty-pool { padding: 20px 24px; font-size: 12px; color: var(--ink-faint); text-align: center; }
+
+  /* ── 景點拖曳把手 ── */
+  .spot-drag-handle {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 18px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: var(--ink-faint);
+    cursor: grab; user-select: none;
+    background: rgba(0,0,0,0.03);
+    z-index: 2;
+    transition: color 0.2s, background 0.2s;
+  }
+  .spot-drag-handle:hover { color: var(--ink-light); background: rgba(0,0,0,0.06); }
+  .spot-card { padding-left: 18px; } /* 讓內容不被 handle 蓋住 */
+
+  /* ── 首圖 ── */
+  .day-cover {
+    position: relative; width: 100%;
+    min-height: 100px; max-height: 160px;
+    overflow: hidden; display: flex; align-items: flex-end;
+  }
+  .day-cover-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(26,26,24,0.35) 0%, transparent 60%);
+  }
+  .day-cover-change {
+    position: relative; z-index: 1;
+    margin: 10px; background: rgba(26,26,24,0.55);
+    border: none; color: white; font-family: 'Noto Sans TC', sans-serif;
+    font-size: 11px; padding: 5px 12px; cursor: pointer;
+    letter-spacing: 0.05em; transition: background 0.2s;
+  }
+  .day-cover-change:hover { background: var(--accent); }
+  .day-cover-empty {
+    width: 100%; padding: 12px 24px;
+    font-size: 11px; color: var(--ink-faint);
+    letter-spacing: 0.1em; cursor: pointer;
+    border-bottom: 1px dashed var(--border);
+    display: flex; align-items: center; gap: 6px;
+    transition: color 0.2s;
+  }
+  .day-cover-empty:hover { color: var(--accent); }
+
+  /* ── 路線摘要：換行顯示全部 ── */
+  .day-route-summary {
+    font-size: 11px; color: var(--ink-faint);
+    letter-spacing: 0.02em; line-height: 1.7;
+    margin-top: 6px;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  /* ── 分頁切換 ── */
+  .page-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    background: var(--paper-dark);
+    padding: 0 48px;
+    gap: 0;
+  }
+  .page-tab {
+    padding: 12px 20px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 12px; letter-spacing: 0.08em;
+    color: var(--ink-faint); cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s; user-select: none;
+    background: none; border-top: none; border-left: none; border-right: none;
+  }
+  .page-tab:hover { color: var(--ink); }
+  .page-tab.active { color: var(--ink); border-bottom-color: var(--accent); }
+
+  /* ── 篩選頁 ── */
+  #browse-page { display: none; padding: 24px 48px; }
+  #browse-page.active { display: block; }
+  #itinerary-page { display: block; }
+  #itinerary-page.hidden { display: none; }
+
+  #filter-panel {
+    border: 1px solid var(--border);
+    background: var(--paper-dark);
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .filter-row {
+    display: flex; align-items: flex-start; gap: 12px; flex-wrap: wrap;
+  }
+  .filter-label {
+    font-size: 11px; color: var(--ink-faint);
+    letter-spacing: 0.08em; white-space: nowrap;
+    padding-top: 5px; min-width: 56px; flex-shrink: 0;
+  }
+  .filter-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .filter-chip {
+    padding: 4px 11px; border: 1px solid var(--border);
+    background: none; font-family: 'Noto Sans TC', sans-serif;
+    font-size: 11px; color: var(--ink-light); cursor: pointer;
+    transition: all 0.15s; white-space: nowrap; line-height: 1.5;
+  }
+  .filter-chip:hover { border-color: var(--accent); color: var(--accent); }
+  .filter-chip.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+  /* Day 標籤顏色 */
+  .day-chip-0  { --dc: #c0392b; }
+  .day-chip-1  { --dc: #8e44ad; }
+  .day-chip-2  { --dc: #2471a3; }
+  .day-chip-3  { --dc: #148f77; }
+  .day-chip-4  { --dc: #b7950b; }
+  .day-chip-5  { --dc: #784212; }
+  .day-chip-6  { --dc: #616a6b; }
+  .day-chip-7  { --dc: #1a5276; }
+  .day-chip-8  { --dc: #6e2f1a; }
+  .day-chip-9  { --dc: #196f3d; }
+  .filter-chip.day-chip { border-color: var(--dc); color: var(--dc); }
+  .filter-chip.day-chip:hover,
+  .filter-chip.day-chip.active { background: var(--dc); color: white; border-color: var(--dc); }
+
+  .browse-result-count {
+    font-size: 11px; color: var(--ink-faint); margin-bottom: 12px;
+    letter-spacing: 0.05em;
+  }
+
+  .browse-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .browse-card {
+    border: 1px solid var(--border);
+    background: #faf7f2;
+    overflow: hidden;
+    position: relative;
+  }
+  .browse-card-img {
+    width: 100%; height: 120px; object-fit: cover;
+    display: block; filter: sepia(8%);
+  }
+  .browse-card-placeholder {
+    width: 100%; height: 80px;
+    background: var(--paper-dark);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; color: var(--ink-faint);
+  }
+  .browse-card-body { padding: 12px 14px; }
+  .browse-card-top { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+  .browse-card-name {
+    font-family: 'Noto Serif TC', serif; font-weight: 600;
+    font-size: 14px; color: var(--ink);
+  }
+  .browse-card-note { font-size: 12px; color: var(--ink-light); margin-bottom: 6px; }
+  .browse-card-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 8px; flex-wrap: wrap; gap: 4px;
+  }
+  .browse-day-badge {
+    font-size: 10px; padding: 2px 8px;
+    color: white; letter-spacing: 0.05em;
+  }
+  .browse-unassigned {
+    font-size: 10px; padding: 2px 8px;
+    background: var(--paper-dark); color: var(--ink-faint);
+    border: 1px solid var(--border); letter-spacing: 0.05em;
+  }
+  .browse-note-btn {
+    background: none; border: 1px solid var(--border);
+    font-family: 'Noto Sans TC', sans-serif; font-size: 10px;
+    color: var(--ink-light); padding: 2px 8px; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .browse-note-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  @media (max-width: 600px) {
+    .page-tabs { padding: 0 12px; }
+    #browse-page { padding: 16px 12px; }
+    .browse-grid { grid-template-columns: 1fr; }
+    .filter-label { min-width: 48px; font-size: 10px; }
+  }
+  body.viewer-mode .editor-only { display: none !important; }
+  body.viewer-mode .spot-card { padding-left: 0; }
+  body.viewer-mode .spot-body { cursor: default !important; pointer-events: none; }
+  body.viewer-mode .spot-note-actions { pointer-events: all; }
+  body.viewer-mode .spot-addr { pointer-events: all; }
+  body.viewer-mode .pool-section { display: none; }
+  body.viewer-mode footer { display: none; }
+  body.viewer-mode .header-sub { visibility: hidden; }
+  body.viewer-mode .add-day-btn { visibility: hidden; }
+  body.viewer-mode .save-btn { visibility: hidden; }
+
+  /* ── Day drag handle ── */
+  .day-drag-handle {
+    cursor: grab;
+    color: var(--ink-faint);
+    font-size: 14px;
+    padding: 0 8px 0 0;
+    user-select: none;
+    line-height: 1;
+    transition: color 0.2s;
+    flex-shrink: 0;
+  }
+  .day-drag-handle:hover { color: var(--ink-light); }
+
+  /* ── Spot drag handle ── */
+  .spot-drag-handle {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: var(--ink-faint);
+    cursor: grab;
+    user-select: none;
+    z-index: 10;
+    background: rgba(0,0,0,0.03);
+    transition: background 0.15s, color 0.15s;
+  }
+  .spot-drag-handle:hover { background: rgba(0,0,0,0.08); color: var(--ink); }
+  .day-block.day-dragging {
+    opacity: 0.35;
+  }
+  .day-block.day-drag-over {
+    outline: 2px dashed var(--accent);
+    outline-offset: -2px;
+  }
+
+  /* ── Collapse ── */
+  .day-collapse-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--ink-faint);
+    padding: 0 6px 0 0;
+    line-height: 1;
+    transition: color 0.2s, transform 0.25s;
+    transform-origin: center;
+    flex-shrink: 0;
+  }
+  .day-collapse-btn:hover { color: var(--ink-light); }
+  .day-collapse-btn.collapsed { transform: rotate(-90deg); }
+  .day-body {
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.25s ease;
+    max-height: 3000px;
+    opacity: 1;
+  }
+  .day-body.collapsed {
+    max-height: 0;
+    opacity: 0;
+  }
+</style>
+</head>
+<body>
+
+<header id="site-header">
+  <img id="header-bg-img" src="" alt="" style="display:none">
+  <div class="header-left">
+    <div class="header-tag">Travel Handbook · <span id="year-display" title="點擊編輯年份" onclick="editYear()" style="cursor:pointer;border-bottom:1px dashed var(--ink-faint);">2026</span></div>
+    <h1>上海 <span>Shanghai</span></h1>
+    <div class="header-sub" id="header-sub">拖曳排序行程 · 點擊地址導航 · 隨時編輯</div>
+    <button id="header-bg-upload-btn" class="header-bg-btn-dark editor-only" onclick="document.getElementById('header-bg-file').click()">＋ 新增封面背景</button>
+    <input type="file" id="header-bg-file" accept="image/*" style="display:none" onchange="onHeaderBgUpload(this)">
+  </div>
+  <div class="mode-toggle-wrap">
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="btn-editor" onclick="setMode('editor')">✏️ 編輯</button>
+      <button class="mode-btn" id="btn-viewer" onclick="setMode('viewer')">👀 瀏覽</button>
+    </div>
+    <button class="add-day-btn editor-only" onclick="addDay()" id="add-day-btn">＋ 新增天數</button>
+    <button class="save-btn editor-only" onclick="downloadHtml()" style="background:var(--ink-light);">⬇️ 下載 HTML</button>
+  </div>
+</header>
+
+<div class="page-tabs">
+  <button class="page-tab active" id="tab-itinerary" onclick="switchPage('itinerary')">📅 行程</button>
+  <button class="page-tab" id="tab-browse" onclick="switchPage('browse')">🗂 所有景點</button>
+</div>
+
+<div id="itinerary-page">
+  <main id="main-container"></main>
+  <footer>SHANGHAI TRAVEL PLANNER · 拖曳景點卡片排序或換天 · 拖曳 ⠿ 把手調整天數順序</footer>
+</div>
+
+<div id="browse-page">
+  <!-- 篩選區 -->
+  <div id="filter-panel">
+    <!-- 1. 是否安排 -->
+    <div class="filter-row">
+      <span class="filter-label">是否安排</span>
+      <div class="filter-chips" id="chips-assigned">
+        <button class="filter-chip active" data-val="all" onclick="toggleAssigned('all')">全部</button>
+        <button class="filter-chip" data-val="yes" onclick="toggleAssigned('yes')">✅ 已排入</button>
+        <button class="filter-chip" data-val="no"  onclick="toggleAssigned('no')">⬜ 未排入</button>
+      </div>
+    </div>
+    <!-- 2. 安排時間（Day，動態產生，每天不同顏色） -->
+    <div class="filter-row" id="filter-row-day">
+      <span class="filter-label">安排時間</span>
+      <div class="filter-chips" id="chips-day"></div>
+    </div>
+    <!-- 3. 景點類型（複選） -->
+    <div class="filter-row">
+      <span class="filter-label">景點類型</span>
+      <div class="filter-chips" id="chips-type">
+        <button class="filter-chip active" data-val="all" onclick="toggleType('all')">全部</button>
+      </div>
+    </div>
+    <!-- 4. 店家支援（連鎖/外送，獨立複選） -->
+    <div class="filter-row">
+      <span class="filter-label">店家支援</span>
+      <div class="filter-chips" id="chips-support">
+        <button class="filter-chip" data-val="連鎖" onclick="toggleSupport('連鎖')">🔁 連鎖</button>
+        <button class="filter-chip" data-val="外送" onclick="toggleSupport('外送')">📦 外送</button>
+      </div>
+    </div>
+  </div>
+  <div class="browse-result-count" id="browse-count"></div>
+  <div class="browse-grid" id="browse-grid"></div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <h3>新增景點</h3>
+    <div class="form-grid">
+      <div class="form-group full">
+        <label>從候補區選取（或直接填寫）</label>
+        <select id="f-pool-pick" onchange="pickFromPool(this.value)" style="background:var(--paper-dark);border:1px solid var(--border);padding:8px 10px;font-family:'Noto Sans TC',sans-serif;font-size:13px;color:var(--ink);outline:none;width:100%;">
+          <option value="">── 選擇候補區景點 ──</option>
+        </select>
+      </div>
+      <div class="form-group full">
+        <label>店名</label>
+        <input type="text" id="f-name" placeholder="例：PPP布丁">
+      </div>
+      <div class="form-group">
+        <label>類型</label>
+        <div class="select-with-add">
+          <select id="f-type">
+            <option>美食</option><option>甜點</option><option>飲料</option>
+            <option>點心</option><option>伴手禮</option><option>逛街</option><option>景點</option>
+          </select>
+          <button class="btn-add-option" title="新增自訂類型" onclick="addCustomType()">＋</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>標籤</label>
+        <div class="select-with-add">
+          <select id="f-badge">
+            <option value="">無</option>
+            <option value="連鎖">🔁 連鎖</option>
+            <option value="外送">📦 可外送</option>
+            <option value="連鎖,外送">🔁＆📦 兩者</option>
+          </select>
+          <button class="btn-add-option" title="新增自訂標籤" onclick="addCustomBadge()">＋</button>
+        </div>
+      </div>
+      <div class="form-group full">
+        <label>地址</label>
+        <input type="text" id="f-addr" placeholder="上海市黃浦區…">
+      </div>
+      <div class="form-group full">
+        <label>備註</label>
+        <textarea id="f-note" rows="2" placeholder="特色、推薦品項…"></textarea>
+      </div>
+      <div class="form-group full">
+        <label>主圖</label>
+        <div class="img-tab-bar">
+          <div class="img-tab active" onclick="switchImgTab('url')">網址</div>
+          <div class="img-tab" onclick="switchImgTab('file')">上傳檔案</div>
+        </div>
+        <div class="img-pane active" id="img-pane-url">
+          <input type="text" id="f-img-url" placeholder="https://…">
+        </div>
+        <div class="img-pane" id="img-pane-file">
+          <div class="file-drop-zone" onclick="document.getElementById('f-img-file').click()">
+            點擊選擇圖片，或拖曳至此
+          </div>
+          <input type="file" id="f-img-file" accept="image/*" style="display:none" onchange="onImgFileChange(this)">
+          <div id="f-img-preview" style="margin-top:6px;"></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">取消</button>
+      <button class="btn-confirm" onclick="confirmAdd()">加入行程</button>
+    </div>
+  </div>
+</div>
+
+<!-- Note View（閱讀模式）-->
+<div class="note-overlay" id="note-overlay">
+  <div class="note-sheet">
+    <div class="note-sheet-handle" onclick="closeNote()"></div>
+    <div class="note-sheet-header">
+      <div style="flex:1"></div>
+      <button class="note-sheet-close" onclick="closeNote()">✕</button>
+    </div>
+    <div class="note-sheet-body" id="note-sheet-body"></div>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox-overlay" id="lightbox-overlay">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <button class="lightbox-nav lightbox-prev" onclick="lightboxNav(-1)">‹</button>
+  <button class="lightbox-nav lightbox-next" onclick="lightboxNav(1)">›</button>
+  <img class="lightbox-img" id="lightbox-img" src="" alt="">
+  <div class="lightbox-label" id="lightbox-label"></div>
+  <div class="lightbox-counter" id="lightbox-counter"></div>
+</div>
+
+<!-- AI 批次輸入 Modal -->
+<div class="modal-overlay" id="ai-input-overlay">
+  <div class="modal" style="width:600px;">
+    <h3>✦ 批次輸入景點</h3>
+    <p style="font-size:12px;color:var(--ink-faint);margin-bottom:16px;line-height:1.6;">
+      每行一筆，格式：<strong>店名、地址、類型、備註</strong><br>
+      例：PPP布丁、上海市靜安區富民路166號、甜點、布丁<br>
+      備註含「連鎖」或「外送」會自動加上標籤
+    </p>
+    <textarea id="ai-batch-input" rows="10"
+      style="width:100%;background:var(--paper-dark);border:1px solid var(--border);padding:10px 12px;font-family:'Noto Sans TC',sans-serif;font-size:13px;color:var(--ink);outline:none;resize:vertical;line-height:1.7;"
+      placeholder="小楊生煎、外送可到、美食、皮薄生煎包&#10;PPP布丁、上海市靜安區富民路166號、甜點、布丁"></textarea>
+    <div id="ai-batch-status" style="font-size:12px;color:var(--ink-faint);margin-top:8px;min-height:18px;"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeAiInput()">取消</button>
+      <button class="btn-confirm" id="ai-parse-btn" onclick="runAiBatchParse()">✦ 解析並加入</button>
+    </div>
+  </div>
+</div>
+
+<!-- Detail Bottom Sheet -->
+<div class="detail-overlay" id="detail-overlay">
+  <div class="detail-panel" id="detail-panel">
+    <div class="sheet-handle" onclick="closeDetail()"></div>
+    <div class="detail-panel-header">
+      <div>
+        <h2 id="detail-name"></h2>
+        <div id="detail-meta" style="margin-top:5px;display:flex;gap:6px;flex-wrap:wrap;"></div>
+      </div>
+      <button class="close-btn" onclick="closeDetail()">✕</button>
+    </div>
+    <div class="detail-panel-body">
+
+      <!-- 主圖 -->
+      <div>
+        <span class="ds-label">主圖</span>
+        <div class="detail-main-img-wrap" id="detail-img-wrap">
+          <div id="detail-main-img-inner"></div>
+          <button class="change-img-btn" onclick="document.getElementById('detail-main-file').click()">更換圖片</button>
+          <input type="file" id="detail-main-file" accept="image/*" style="display:none" onchange="onDetailMainImgUpload(this)">
+        </div>
+      </div>
+
+      <!-- 店名 + 地址 -->
+      <div>
+        <span class="ds-label">店名</span>
+        <input class="ds-input" id="d-name" type="text" placeholder="店名">
+      </div>
+      <div>
+        <span class="ds-label">地址</span>
+        <input class="ds-input" id="d-addr" type="text" placeholder="上海市…">
+      </div>
+
+      <!-- 類型 + 標籤 -->
+      <div class="ds-row">
+        <div class="ds-col">
+          <span class="ds-label">類型</span>
+          <div class="select-with-add">
+            <select class="ds-select" id="d-type"></select>
+            <button class="btn-add-option" onclick="addCustomTypeDetail()">＋</button>
+          </div>
+        </div>
+        <div class="ds-col">
+          <span class="ds-label">標籤</span>
+          <div class="select-with-add">
+            <select class="ds-select" id="d-badge"></select>
+            <button class="btn-add-option" onclick="addCustomBadgeDetail()">＋</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 簡短備註 -->
+      <div>
+        <span class="ds-label">備註（顯示在卡片上）</span>
+        <input class="ds-input" id="d-note" type="text" placeholder="特色、推薦品項…">
+      </div>
+
+      <!-- 推薦筆記 -->
+      <div>
+        <span class="ds-label">📝 推薦筆記（菜單、網友推薦、注意事項）</span>
+        <textarea class="ds-textarea" id="d-detail-note" placeholder="可自由記錄…"></textarea>
+      </div>
+
+      <!-- 附加圖片 -->
+      <div>
+        <span class="ds-label">🖼 附加圖片（菜單、參考照片）</span>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px;">
+          <button class="detail-upload-btn" onclick="document.getElementById('detail-img-upload').click()">＋ 上傳圖片</button>
+          <input type="file" id="detail-img-upload" accept="image/*" multiple style="display:none" onchange="onDetailImgUpload(this)">
+          <input type="text" id="detail-img-url-input" placeholder="貼圖片網址後按 Enter"
+            style="flex:1;min-width:140px;background:var(--paper-dark);border:1px solid var(--border);padding:9px 10px;font-family:inherit;font-size:13px;outline:none;"
+            onkeydown="if(event.key==='Enter')addDetailImgUrl()">
+        </div>
+        <div class="detail-extra-imgs" id="detail-extra-imgs"></div>
+      </div>
+
+    </div>
+    <div class="detail-panel-footer">
+      <button class="btn-cancel" onclick="closeDetail()">取消</button>
+      <button class="btn-confirm" onclick="saveDetail()">儲存變更</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Data ──────────────────────────────────────────────
+const ALL_SPOTS = [
+  { id: 's1',  name: 'PPP布丁',               type: '甜點',  badge: [],        addr: '上海市靜安區富民路166號',       note: '布丁', img: 'https://images.unsplash.com/photo-1551024506-0bccd828d307?w=200&q=80', detailNote:'', extraImgs:[] },
+  { id: 's2',  name: 'Ok doggie雪花冰',        type: '甜點',  badge: [],        addr: '上海市徐匯區新樂路80號',         note: '狗狗造型雪花冰', img: 'https://images.unsplash.com/photo-1488900128323-21503983a07e?w=200&q=80', detailNote:'', extraImgs:[] },
+  { id: 's3',  name: '迷絲捲 Ms.Juan（南京東路店）', type: '伴手禮', badge: [],   addr: '上海市黃浦區南京西路720號1層',   note: '方形棉花糖蛋捲', img: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=200&q=80', detailNote:'', extraImgs:[] },
+  { id: 's4',  name: '小楊生煎',               type: '美食',  badge: ['連鎖','外送'], addr: '外送可到',                 note: '皮薄生煎包', img: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?w=200&q=80', detailNote:'', extraImgs:[] },
+  { id: 's5',  name: '裕興記·蟹黃麵館（人民廣場店）', type: '美食', badge: ['連鎖'], addr: '上海市黃浦區九江路686號騰飛元創大廈一層108室', note: '蟹黃麵（建議分食）跟湯包', img: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=200&q=80', detailNote:'', extraImgs:[] },
+  { id: 's6',  name: '萊萊小籠（靜安店）',     type: '美食',  badge: [],        addr: '上海市靜安區萬航渡路50號',       note: '蟹黃湯包', img: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?w=200&q=80', detailNote:'', extraImgs:[] },
+  { id: 's7',  name: '阿嬤手作（薈聚中心店）', type: '飲料',  badge: ['連鎖'],   addr: '上海市長寧區金鐘路788號薈聚L1層', note: '麻糬奶茶', img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&q=80', detailNote:'', extraImgs:[] },
+  { id: 's8',  name: 'CHAGEE 霸王茶姬',        type: '飲料',  badge: ['連鎖'],   addr: '上海市長寧區仙霞西路88號',       note: '青青糯山 or 伯牙絕絃', img: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=200&q=80', detailNote:'', extraImgs:[] },
+  { id: 's9',  name: '鮮得來（長寧龍之夢店）', type: '美食',  badge: ['連鎖','外送'], addr: '上海市長寧區長寧路1018號龍之夢B2層', note: '排骨年糕和酒釀湯圓', img: 'https://images.unsplash.com/photo-1617093727343-374698b1b08d?w=200&q=80', detailNote:'', extraImgs:[] },
+  { id: 's10', name: '貴州大黃牛肉火鍋（七寶店）', type: '美食', badge: [],      addr: '上海市閔行區七莘路2953號',       note: '牛肉火鍋', img: 'https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=200&q=80', detailNote:'', extraImgs:[] },
+  { id: 's11', name: '外灘家宴·上海菜',        type: '美食',  badge: [],        addr: '上海市黃浦區九江路80號二樓202',  note: '本幫菜', img: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=200&q=80', detailNote:'', extraImgs:[] },
+  { id: 's12', name: '胖子煎餅店',             type: '點心',  badge: [],        addr: '上海市徐匯區欽州南路261號',     note: '煎餅果子', img: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=200&q=80', detailNote:'', extraImgs:[] },
+  { id: 's13', name: '南京東路步行街',          type: '景點',  badge: [],        addr: '上海市黃浦區南京東路558號',     note: '商圈，熱鬧步行街', img: 'https://images.unsplash.com/photo-1474181487882-5abf3f0ba6c2?w=200&q=80', detailNote:'', extraImgs:[] },
+  { id: 's14', name: 'M&Ms（世茂廣場店）',      type: '伴手禮', badge: ['連鎖'],  addr: '上海市黃浦區南京東路829號百聯世貿1層', note: 'M&Ms 旗艦', img: 'https://images.unsplash.com/photo-1581798459219-318e769bd726?w=200&q=80', detailNote:'', extraImgs:[] },
+  { id: 's15', name: '名創優品 MINISO（南京東路店）', type: '逛街', badge: ['連鎖'], addr: '上海市黃浦區南京東路650-690號', note: 'MINISO 旗艦', img: 'https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=200&q=80', detailNote:'', extraImgs:[] },
+  { id: 's16', name: 'POP MART 泡泡瑪特（世茂旗艦）', type: '逛街', badge: ['連鎖'], addr: '上海市黃浦區南京東路829號世茂廣場1-2層', note: '潮玩旗艦店', img: 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=200&q=80', detailNote:'', extraImgs:[] },
+  { id: 's17', name: 'W.Management（第一百貨店）', type: '逛街', badge: [],      addr: '上海市黃浦區南京東路830號第一百貨B01層', note: '衣服選品', img: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=200&q=80', detailNote:'', extraImgs:[] },
+  { id: 's18', name: 'TOP TOY（上海全球旗艦）', type: '逛街',  badge: ['連鎖'],   addr: '上海市黃浦區南京東路558號（近浙江中路）', note: '潮玩，名創優品旗下', img: 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=200&q=80', detailNote:'', extraImgs:[] },
+  { id: 's19', name: '百聯ZX創趣場',           type: '逛街',  badge: [],        addr: '上海市黃浦區南京東路340-372號', note: '二次元潮玩商場', img: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=200&q=80', detailNote:'', extraImgs:[] },
+  { id: 's20', name: '上海哈爾濱食品廠（新世界城店）', type: '伴手禮', badge: ['連鎖'], addr: '上海市黃浦區南京西路2號新世界城B1層', note: '蝴蝶酥，中華老字號', img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&q=80', detailNote:'', extraImgs:[] },
+  { id: 's21', name: 'LOOKNOW LAB（人廣來福士店）', type: '逛街', badge: [],     addr: '上海市黃浦區西藏中路268號來福士廣場F1層', note: 'Jellycat 選品', img: 'https://images.unsplash.com/photo-1524678606370-a47ad25cb82a?w=200&q=80', detailNote:'', extraImgs:[] },
+  { id: 's22', name: '味香齋麵館（南京東路店）', type: '美食', badge: [],         addr: '上海市黃浦區湖北路151號',       note: '麻醬麵', img: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=200&q=80', detailNote:'', extraImgs:[] },
+];
+
+// State
+let days = [
+  {
+    id: 'day1',
+    date: '',
+    spots: ['s13','s19','s18','s21','s5','s22','s15','s17','s14','s16','s4','s11','s20'],
+  }
+];
+let pool = ALL_SPOTS.map(s=>s.id).filter(id => !days.flatMap(d=>d.spots).includes(id));
+
+let modalTarget = null;
+let dragSrc = null;
+let dragSrcContainer = null;
+let pendingImgDataUrl = null;
+let detailSpotId = null;
+let poolCollapsed = false;
+
+// ── Custom type/badge colors ──────────────────────────────
+const CUSTOM_TYPES = {}; // typeName -> color (for dynamic types)
+const TAG_COLORS = ['#d4a853','#a87ab3','#5b8fa8','#7a9e7e','#8a7fb5','#c07850','#5a8a7a','#c07070','#6a9a6a','#7070b0'];
+let colorIdx = 0;
+
+// ── Render ──────────────────────────────────────────────
+function render() {
+  sortPool();
+  const container = document.getElementById('main-container');
+  container.innerHTML = '';
+  days.forEach(day => { container.appendChild(renderDay(day)); });
+  container.appendChild(renderPool());
+  if (currentPage === 'browse') renderBrowse();
+}
+
+function renderDay(day) {
+  const div = document.createElement('div');
+  div.className = 'day-block';
+  div.dataset.dayId = day.id;
+
+  const spotsHtml = day.spots.map(id => {
+    const spot = ALL_SPOTS.find(s => s.id === id);
+    return spot ? renderSpotCard(spot, day.id) : '';
+  }).join('');
+
+  // 路線摘要：取每個景點簡短名稱（去掉括號內容），用→串接
+  const routeSummary = day.spots.map(id => {
+    const spot = ALL_SPOTS.find(s => s.id === id);
+    if (!spot) return '';
+    return spot.name.replace(/[（(【\[].*/,'').trim();
+  }).filter(Boolean).join(' → ');
+
+  // 首圖
+  const coverStyle = day.coverImg
+    ? `style="background-image:url('${day.coverImg}');background-size:cover;background-position:center;min-height:80px;"`
+    : '';
+  const coverHtml = day.coverImg
+    ? `<div class="day-cover" ${coverStyle}>
+        <div class="day-cover-overlay"></div>
+        <button class="day-cover-change editor-only" onclick="document.getElementById('cover-input-${day.id}').click()">更換首圖</button>
+        <input type="file" id="cover-input-${day.id}" accept="image/*" style="display:none" onchange="onCoverUpload('${day.id}',this)">
+       </div>`
+    : `<div class="day-cover-empty editor-only" onclick="document.getElementById('cover-input-${day.id}').click()">
+        ＋ 新增首圖
+        <input type="file" id="cover-input-${day.id}" accept="image/*" style="display:none" onchange="onCoverUpload('${day.id}',this)">
+       </div>`;
+
+  div.innerHTML = `
+    <div class="day-header" id="dayheader-${day.id}">
+      <div class="day-header-row1">
+        <span class="day-drag-handle editor-only" title="拖曳調整天數順序">⠿</span>
+        <button class="day-collapse-btn ${day.collapsed ? 'collapsed' : ''}" title="展開／摺疊" onclick="toggleCollapse('${day.id}')">▾</button>
+        <span class="day-label">Day ${days.indexOf(day)+1}</span>
+        <input class="day-date-input" type="text" placeholder="6/20 週五"
+          value="${day.date}" onchange="updateDate('${day.id}', this.value)">
+        ${day.collapsed ? `<span style="font-size:11px;color:var(--ink-faint);">${day.spots.length} 個景點</span>` : ''}
+        <div class="day-actions editor-only">
+          <button onclick="openModal('${day.id}')">＋ 新增景點</button>
+          <button class="del-day" onclick="deleteDay('${day.id}')">刪除此天</button>
+        </div>
+      </div>
+      ${!day.collapsed && routeSummary ? `<div class="day-route-summary">${routeSummary}</div>` : ''}
+    </div>
+    <div class="day-body ${day.collapsed ? 'collapsed' : ''}" id="body-${day.id}">
+      <div class="spot-list" id="list-${day.id}"
+        ondragover="onDragOver(event,'${day.id}')"
+        ondrop="onDrop(event,'${day.id}')"
+        ondragleave="onDragLeave(event,'${day.id}')">
+        ${spotsHtml}
+      </div>
+      ${day.spots.length === 0 ? '<div class="drag-hint">拖曳景點至此處</div>' : ''}
+      <div class="add-spot-row editor-only">
+        <button class="add-spot-btn" onclick="openModal('${day.id}')">＋ 新增景點</button>
+      </div>
+    </div>
+  `;
+
+  setTimeout(() => {
+    const list = document.getElementById('list-' + day.id);
+    if (list) list.querySelectorAll('.spot-card').forEach(card => attachDrag(card));
+    const handle = div.querySelector('.day-drag-handle');
+    if (handle) attachDayDrag(div, handle, day.id);
+  }, 0);
+
+  return div;
+}
+
+function renderPool() {
+  const div = document.createElement('div');
+  div.className = 'day-block pool-section' + (poolCollapsed ? ' pool-collapsed' : '');
+
+  const spotsHtml = pool.map(id => {
+    const spot = ALL_SPOTS.find(s => s.id === id);
+    return spot ? renderSpotCard(spot, 'pool') : '';
+  }).join('');
+
+  div.innerHTML = `
+    <div class="day-header pool-header" style="display:flex;align-items:center;justify-content:space-between;padding:12px 20px;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button class="pool-toggle-btn ${poolCollapsed?'collapsed':''}" onclick="togglePool()" title="展開／收起">▾</button>
+        <span class="pool-title">📍 未排入行程的景點</span>
+        <span class="pool-count" style="font-size:11px;color:var(--ink-faint);">${pool.length} 個地點</span>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button onclick="openAiInput()" style="background:var(--ink);color:var(--paper);border:none;padding:4px 12px;font-family:'Noto Sans TC',sans-serif;font-size:11px;letter-spacing:0.08em;cursor:pointer;white-space:nowrap;">✦ 批次輸入</button>
+        <button class="add-spot-btn" onclick="openModal('pool')" style="font-size:11px;color:var(--ink-faint);background:none;border:none;cursor:pointer;letter-spacing:0.08em;">＋ 新增景點</button>
+      </div>
+    </div>
+    <div class="spot-list" id="list-pool"
+      ondragover="onDragOver(event,'pool')"
+      ondrop="onDrop(event,'pool')"
+      ondragleave="onDragLeave(event,'pool')">
+      ${pool.length ? spotsHtml : '<div class="empty-pool">所有景點都已排入行程 🎉</div>'}
+    </div>
+    <div class="add-spot-row">
+      <button class="add-spot-btn" onclick="openModal('pool')">＋ 新增景點到候補區</button>
+    </div>
+  `;
+
+  setTimeout(() => {
+    const list = document.getElementById('list-pool');
+    if (list) list.querySelectorAll('.spot-card').forEach(card => attachDrag(card));
+  }, 0);
+
+  return div;
+}
+
+function renderSpotCard(spot, containerId) {
+  const mapsUrl = spot.addr && spot.addr !== '外送可到'
+    ? `https://uri.amap.com/search?keyword=${encodeURIComponent(spot.name)}&city=上海&src=mypage`
+    : null;
+
+  const imgHtml = spot.img
+    ? `<img class="spot-img" src="${spot.img}" alt="${spot.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+    : '';
+  const placeholderEmoji = {'美食':'🍜','甜點':'🍮','飲料':'🧋','伴手禮':'🎁','逛街':'🛍️','點心':'🥞','景點':'📍'}[spot.type] || '📍';
+
+  const badges = (spot.badge||[]).map(b => {
+    const label = b==='連鎖'?'🔁 連鎖': b==='外送'?'📦 外送':`${b}`;
+    const cls = b==='連鎖'?'badge-連鎖': b==='外送'?'badge-外送':'badge-custom';
+    return `<span class="spot-badge ${cls}">${label}</span>`;
+  }).join('');
+
+  const tagClass = `tag-${spot.type}`;
+  const tagStyle = CUSTOM_TYPES[spot.type] ? `style="background:${CUSTOM_TYPES[spot.type]}"` : '';
+
+  return `
+    <div class="spot-card" data-spot-id="${spot.id}" data-container="${containerId}">
+      <span class="spot-drag-handle editor-only" title="拖曳排序">⠿</span>
+      ${imgHtml}
+      <div class="spot-img-placeholder" style="${spot.img?'display:none':''}">${placeholderEmoji}</div>
+      <div class="spot-body" onclick="openDetail('${spot.id}')" title="點擊查看詳情與編輯">
+        <div class="spot-top">
+          <span class="spot-tag ${tagClass}" ${tagStyle}>${spot.type}</span>
+          <span class="spot-name">${spot.name}</span>
+          ${badges}
+        </div>
+        <div class="spot-note">${spot.note||''}</div>
+        <div class="spot-addr" onclick="event.stopPropagation()">
+          <span class="spot-addr-icon">📍</span>
+          ${mapsUrl
+            ? `<a href="${mapsUrl}" target="_blank" title="在高德地圖開啟導航">${spot.addr}</a>`
+            : `<span>${spot.addr}</span>`
+          }
+        </div>
+        <div class="spot-note-actions" onclick="event.stopPropagation()">
+          <button class="btn-note-view" onclick="openNote('${spot.id}')">筆記</button>
+          <button class="btn-remove editor-only" onclick="removeSpot('${spot.id}','${containerId}')">✕</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ── Drag & Drop ──────────────────────────────────────────
+let dayDragSrcId = null;
+
+function attachDayDrag(dayBlock, handle, dayId) {
+  handle.setAttribute('draggable', 'true');
+
+  handle.addEventListener('dragstart', e => {
+    dayDragSrcId = dayId;
+    dragSrc = null;
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', 'day:' + dayId);
+    setTimeout(() => dayBlock.classList.add('day-dragging'), 0);
+    e.stopPropagation();
+  });
+
+  handle.addEventListener('dragend', () => {
+    dayBlock.classList.remove('day-dragging');
+    document.querySelectorAll('.day-block').forEach(b => b.classList.remove('day-drag-over'));
+    dayDragSrcId = null;
+  });
+
+  dayBlock.addEventListener('dragover', e => {
+    if (!dayDragSrcId || dayDragSrcId === dayId) return;
+    e.preventDefault();
+    dayBlock.classList.add('day-drag-over');
+  });
+
+  dayBlock.addEventListener('dragleave', e => {
+    if (!dayBlock.contains(e.relatedTarget)) {
+      dayBlock.classList.remove('day-drag-over');
+    }
+  });
+
+  dayBlock.addEventListener('drop', e => {
+    if (!dayDragSrcId || dayDragSrcId === dayId) return;
+    e.preventDefault();
+    e.stopPropagation();
+    dayBlock.classList.remove('day-drag-over');
+    const fromIdx = days.findIndex(d => d.id === dayDragSrcId);
+    const toIdx   = days.findIndex(d => d.id === dayId);
+    if (fromIdx !== -1 && toIdx !== -1) {
+      const [moved] = days.splice(fromIdx, 1);
+      days.splice(toIdx, 0, moved);
+      render();
+    }
+  });
+}
+
+function attachDrag(card) {
+  const handle = card.querySelector('.spot-drag-handle');
+  if (!handle) return;
+
+  // handle 本身直接可拖
+  handle.setAttribute('draggable', 'true');
+
+  handle.addEventListener('dragstart', e => {
+    dragSrc = card.dataset.spotId;
+    dragSrcContainer = card.dataset.container;
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', dragSrc);
+    setTimeout(() => card.classList.add('dragging'), 0);
+    // 阻止事件繼續冒泡到 card
+    e.stopPropagation();
+  });
+
+  handle.addEventListener('dragend', () => {
+    card.classList.remove('dragging');
+    document.querySelectorAll('.spot-list').forEach(l => l.classList.remove('drag-over'));
+    document.querySelectorAll('.spot-card').forEach(c => c.classList.remove('drag-target'));
+  });
+
+  // 卡片本身接受 drop
+  card.addEventListener('dragover', e => {
+    if (!dragSrc) return;
+    e.preventDefault();
+    card.classList.add('drag-target');
+  });
+
+  card.addEventListener('dragleave', () => card.classList.remove('drag-target'));
+
+  card.addEventListener('drop', e => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (dragSrc && dragSrc !== card.dataset.spotId) {
+      moveSpotBefore(dragSrc, dragSrcContainer, card.dataset.spotId, card.dataset.container);
+    }
+  });
+}
+
+function onDragOver(e, containerId) {
+  e.preventDefault();
+  const list = document.getElementById('list-' + containerId);
+  if (list) list.classList.add('drag-over');
+}
+function onDragLeave(e, containerId) {
+  const list = document.getElementById('list-' + containerId);
+  if (list) list.classList.remove('drag-over');
+}
+function onDrop(e, containerId) {
+  e.preventDefault();
+  if (!dragSrc) return;
+  moveSpotToContainer(dragSrc, dragSrcContainer, containerId);
+}
+
+function moveSpotBefore(srcId, srcContainer, targetId, targetContainer) {
+  // Remove from source
+  removeFromContainer(srcId, srcContainer);
+  // Insert before target in target container
+  if (targetContainer === 'pool') {
+    const idx = pool.indexOf(targetId);
+    pool.splice(idx, 0, srcId);
+  } else {
+    const day = days.find(d => d.id === targetContainer);
+    if (day) {
+      const idx = day.spots.indexOf(targetId);
+      day.spots.splice(idx, 0, srcId);
+    }
+  }
+  render();
+}
+
+function moveSpotToContainer(spotId, fromContainer, toContainer) {
+  if (fromContainer === toContainer) return;
+  removeFromContainer(spotId, fromContainer);
+  if (toContainer === 'pool') {
+    pool.push(spotId);
+  } else {
+    const day = days.find(d => d.id === toContainer);
+    if (day) day.spots.push(spotId);
+  }
+  render();
+}
+
+function removeFromContainer(spotId, container) {
+  if (container === 'pool') {
+    pool = pool.filter(id => id !== spotId);
+  } else {
+    const day = days.find(d => d.id === container);
+    if (day) day.spots = day.spots.filter(id => id !== spotId);
+  }
+}
+
+function removeSpot(spotId, containerId) {
+  // 從所有 days 和 pool 移除
+  days.forEach(day => { day.spots = day.spots.filter(id => id !== spotId); });
+  pool = pool.filter(id => id !== spotId);
+  // 加回 pool
+  pool.push(spotId);
+  sortPool();
+  render();
+  if (currentPage === 'browse') renderBrowse();
+}
+
+// ── Day Management ──────────────────────────────────────
+function addDay() {
+  const id = 'day' + Date.now();
+  days.push({ id, date: '', spots: [] });
+  render();
+}
+function deleteDay(dayId) {
+  const day = days.find(d => d.id === dayId);
+  if (day) {
+    day.spots.forEach(id => { if (!pool.includes(id)) pool.push(id); });
+    days = days.filter(d => d.id !== dayId);
+    render();
+  }
+}
+function updateDate(dayId, val) {
+  const day = days.find(d => d.id === dayId);
+  if (day) day.date = val;
+}
+
+function toggleCollapse(dayId) {
+  const day = days.find(d => d.id === dayId);
+  if (!day) return;
+  day.collapsed = !day.collapsed;
+  // Toggle without full re-render for smoothness
+  const body = document.getElementById('body-' + dayId);
+  const btn  = document.querySelector(`#dayheader-${dayId} .day-collapse-btn`);
+  const header = document.getElementById('dayheader-' + dayId);
+  if (body) body.classList.toggle('collapsed', day.collapsed);
+  if (btn)  btn.classList.toggle('collapsed', day.collapsed);
+  // Update count hint
+  const existing = header.querySelector('.collapse-count');
+  if (existing) existing.remove();
+  if (day.collapsed) {
+    const hint = document.createElement('span');
+    hint.className = 'collapse-count';
+    hint.style.cssText = 'font-size:11px;color:var(--ink-faint);margin-left:6px;';
+    hint.textContent = `${day.spots.length} 個景點`;
+    header.querySelector('.day-header-left').appendChild(hint);
+  }
+}
+
+function editYear() {
+  const el = document.getElementById('year-display');
+  const cur = el.textContent;
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.value = cur;
+  input.style.cssText = 'width:4ch;background:transparent;border:none;border-bottom:1px solid var(--ink-faint);font:inherit;color:inherit;outline:none;text-align:center;';
+  el.replaceWith(input);
+  input.focus();
+  input.select();
+  const done = () => {
+    const span = document.createElement('span');
+    span.id = 'year-display';
+    span.title = '點擊編輯年份';
+    span.style.cssText = 'cursor:pointer;border-bottom:1px dashed var(--ink-faint);';
+    span.textContent = input.value || cur;
+    span.onclick = editYear;
+    input.replaceWith(span);
+  };
+  input.addEventListener('blur', done);
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') input.blur(); });
+}
+
+// ── Modal ──────────────────────────────────────────────
+function openModal(target) {
+  modalTarget = target;
+  pendingImgDataUrl = null;
+  document.getElementById('modal-overlay').classList.add('open');
+  document.getElementById('f-name').value = '';
+  document.getElementById('f-addr').value = '';
+  document.getElementById('f-note').value = '';
+  document.getElementById('f-img-url').value = '';
+  document.getElementById('f-img-preview').innerHTML = '';
+  document.getElementById('f-img-file').value = '';
+  document.getElementById('f-type').value = '美食';
+  document.getElementById('f-badge').value = '';
+  const picker = document.getElementById('f-pool-pick');
+  picker.value = '';
+  picker.dataset.pickedId = '';
+  refreshPoolPicker();
+  switchImgTab('url');
+  setTimeout(() => document.getElementById('f-name').focus(), 100);
+}
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  modalTarget = null;
+}
+function confirmAdd() {
+  const name = document.getElementById('f-name').value.trim();
+  if (!name) { alert('請輸入店名'); return; }
+  const badgeVal = document.getElementById('f-badge').value;
+  const badge = badgeVal ? badgeVal.split(',') : [];
+  const imgUrl = pendingImgDataUrl || document.getElementById('f-img-url').value.trim() || null;
+
+  const pickedId = document.getElementById('f-pool-pick').dataset.pickedId;
+
+  if (pickedId && pool.includes(pickedId)) {
+    // 從候補區移動到目標天
+    pool = pool.filter(id => id !== pickedId);
+    // 更新資料（可能有改動）
+    const spot = ALL_SPOTS.find(s => s.id === pickedId);
+    if (spot) {
+      spot.name  = name;
+      spot.type  = document.getElementById('f-type').value;
+      spot.badge = badge;
+      spot.addr  = document.getElementById('f-addr').value.trim();
+      spot.note  = document.getElementById('f-note').value.trim();
+      if (imgUrl) spot.img = imgUrl;
+    }
+    if (modalTarget !== 'pool') {
+      const day = days.find(d => d.id === modalTarget);
+      if (day) day.spots.push(pickedId);
+    } else {
+      pool.push(pickedId);
+    }
+  } else {
+    // 全新景點
+    const spot = {
+      id: 's' + Date.now(),
+      name,
+      type: document.getElementById('f-type').value,
+      badge,
+      addr: document.getElementById('f-addr').value.trim(),
+      note: document.getElementById('f-note').value.trim(),
+      img: imgUrl,
+      detailNote: '',
+      extraImgs: [],
+    };
+    ALL_SPOTS.push(spot);
+    if (modalTarget === 'pool') {
+      pool.push(spot.id);
+    } else {
+      const day = days.find(d => d.id === modalTarget);
+      if (day) day.spots.push(spot.id);
+    }
+  }
+  sortPool();
+  closeModal();
+  render();
+  if (currentPage === 'browse') renderBrowse();
+}
+
+// ── Image tab switch ──────────────────────────────────────
+function switchImgTab(mode) {
+  document.querySelectorAll('.img-tab').forEach((t,i) => {
+    t.classList.toggle('active', (i===0&&mode==='url')||(i===1&&mode==='file'));
+  });
+  document.getElementById('img-pane-url').classList.toggle('active', mode==='url');
+  document.getElementById('img-pane-file').classList.toggle('active', mode==='file');
+}
+function onImgFileChange(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    pendingImgDataUrl = e.target.result;
+    document.getElementById('f-img-preview').innerHTML =
+      `<img src="${e.target.result}" style="height:80px;margin-top:6px;border:1px solid var(--border);object-fit:cover;">`;
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── Custom type / badge ───────────────────────────────────
+function addCustomType() {
+  const name = prompt('輸入新類型名稱：');
+  if (!name || !name.trim()) return;
+  const n = name.trim();
+  const color = TAG_COLORS[colorIdx++ % TAG_COLORS.length];
+  CUSTOM_TYPES[n] = color;
+  const style = document.createElement('style');
+  style.textContent = `.tag-${CSS.escape(n)} { background: ${color}; }`;
+  document.head.appendChild(style);
+  ['f-type','d-type'].forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    const opt = document.createElement('option');
+    opt.value = n; opt.textContent = n;
+    sel.appendChild(opt);
+    sel.value = n;
+  });
+}
+function addCustomBadge() {
+  const name = prompt('輸入新標籤名稱：');
+  if (!name || !name.trim()) return;
+  const n = name.trim();
+  ['f-badge','d-badge'].forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    const opt = document.createElement('option');
+    opt.value = n; opt.textContent = n;
+    sel.appendChild(opt);
+    sel.value = n;
+  });
+  const style = document.createElement('style');
+  style.textContent = `.badge-${CSS.escape(n)} { background:#e8e0f0; color:#4a3a6a; border:1px solid #c0b0d8; }`;
+  document.head.appendChild(style);
+}
+
+// ── Detail Panel ──────────────────────────────────────────
+function syncDetailSelects() {
+  // Sync type options from f-type to d-type
+  const src = document.getElementById('f-type');
+  const dst = document.getElementById('d-type');
+  if (!src || !dst) return;
+  const cur = dst.value;
+  dst.innerHTML = src.innerHTML;
+  if (cur) dst.value = cur;
+
+  // Sync badge options
+  const bsrc = document.getElementById('f-badge');
+  const bdst = document.getElementById('d-badge');
+  if (!bsrc || !bdst) return;
+  const bcur = bdst.value;
+  bdst.innerHTML = bsrc.innerHTML;
+  if (bcur) bdst.value = bcur;
+}
+
+function openDetail(spotId) {
+  const spot = ALL_SPOTS.find(s => s.id === spotId);
+  if (!spot) return;
+  detailSpotId = spotId;
+
+  syncDetailSelects();
+
+  document.getElementById('detail-name').textContent = spot.name;
+  document.getElementById('d-name').value = spot.name || '';
+  document.getElementById('d-addr').value = spot.addr || '';
+  document.getElementById('d-note').value = spot.note || '';
+  document.getElementById('d-detail-note').value = spot.detailNote || '';
+
+  const dType = document.getElementById('d-type');
+  dType.value = spot.type || '美食';
+
+  const dBadge = document.getElementById('d-badge');
+  const badgeVal = (spot.badge||[]).join(',');
+  dBadge.value = badgeVal || '';
+
+  // meta row (read-only display)
+  const meta = document.getElementById('detail-meta');
+  const tagStyle = CUSTOM_TYPES[spot.type] ? `style="background:${CUSTOM_TYPES[spot.type]}"` : '';
+  meta.innerHTML = `<span class="spot-tag tag-${spot.type}" ${tagStyle}>${spot.type}</span>`
+    + (spot.badge||[]).map(b=>{
+        const label = b==='連鎖'?'🔁 連鎖':b==='外送'?'📦 外送':b;
+        const cls = b==='連鎖'?'badge-連鎖':b==='外送'?'badge-外送':'badge-custom';
+        return `<span class="spot-badge ${cls}">${label}</span>`;
+      }).join('');
+
+  // main image
+  const inner = document.getElementById('detail-main-img-inner');
+  inner.innerHTML = spot.img
+    ? `<img src="${spot.img}" alt="${spot.name}" style="width:100%;max-height:180px;object-fit:cover;border:1px solid var(--border);filter:sepia(8%);display:block;">`
+    : `<div style="height:80px;background:var(--paper-dark);display:flex;align-items:center;justify-content:center;color:var(--ink-faint);font-size:13px;">無圖片，點「更換圖片」上傳</div>`;
+
+  // extra imgs
+  renderDetailExtraImgs(spot);
+  document.getElementById('detail-img-url-input').value = '';
+
+  document.getElementById('detail-overlay').classList.add('open');
+}
+
+// ── Note View（閱讀模式）────────────────────────────────
+function openNote(spotId) {
+  const spot = ALL_SPOTS.find(s => s.id === spotId);
+  if (!spot) return;
+
+  const mapsUrl = spot.addr && spot.addr !== '外送可到'
+    ? `https://uri.amap.com/search?keyword=${encodeURIComponent(spot.name)}&city=上海&src=mypage` : null;
+
+  const tagStyle = CUSTOM_TYPES[spot.type] ? `style="background:${CUSTOM_TYPES[spot.type]}"` : '';
+  const tagsHtml = `<span class="spot-tag tag-${spot.type}" ${tagStyle}>${spot.type}</span>`
+    + (spot.badge||[]).map(b => {
+        const label = b==='連鎖'?'🔁 連鎖':b==='外送'?'📦 外送':b;
+        const cls = b==='連鎖'?'badge-連鎖':b==='外送'?'badge-外送':'badge-custom';
+        return `<span class="spot-badge ${cls}">${label}</span>`;
+      }).join('');
+
+  const heroHtml = spot.img
+    ? `<img class="note-hero" src="${spot.img}" alt="${spot.name}">`
+    : '';
+
+  const addrHtml = spot.addr
+    ? (mapsUrl
+        ? `<a href="${mapsUrl}" target="_blank">${spot.addr}</a>`
+        : spot.addr)
+    : '—';
+
+  const shortNoteHtml = spot.note
+    ? `<div class="note-short">「${spot.note}」</div>` : '';
+
+  const detailHtml = spot.detailNote
+    ? `<span class="note-detail-label">推薦筆記</span>
+       <div class="note-detail-content">${spot.detailNote}</div>` : '';
+
+  const extraImgs = (spot.extraImgs||[]).map(item =>
+    typeof item === 'string' ? { src: item, label: '' } : item
+  );
+
+  const extraImgsHtml = extraImgs.length
+    ? `<span class="note-detail-label">參考圖片</span>
+       <div class="note-img-carousel">
+         ${extraImgs.map((item, i) => `
+           <div class="note-img-slide" onclick="openLightbox('${spot.id}',${i})">
+             <img src="${item.src}" alt="${item.label||''}">
+             ${item.label ? `<div class="note-img-label">${item.label}</div>` : ''}
+           </div>`).join('')}
+       </div>` : '';
+
+  const nameFirst = spot.name.slice(0, 1);
+  const nameRest = spot.name.slice(1);
+
+  document.getElementById('note-sheet-body').innerHTML = `
+    ${heroHtml}
+    <div class="note-spot-name"><span>${nameFirst}</span>${nameRest}</div>
+    <div class="note-tags">${tagsHtml}</div>
+    <div class="note-addr-row">
+      <span class="note-addr-icon">📍</span>
+      <span class="note-addr-text">${addrHtml}</span>
+    </div>
+    ${shortNoteHtml}
+    ${detailHtml}
+    ${extraImgsHtml}
+  `;
+
+  document.getElementById('note-overlay').classList.add('open');
+}
+function closeNote() {
+  document.getElementById('note-overlay').classList.remove('open');
+}
+document.getElementById('note-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeNote();
+});
+
+
+
+function closeDetail() {
+  document.getElementById('detail-overlay').classList.remove('open');
+  detailSpotId = null;
+}
+function saveDetail() {
+  const spot = ALL_SPOTS.find(s => s.id === detailSpotId);
+  if (!spot) return;
+  spot.name = document.getElementById('d-name').value.trim() || spot.name;
+  spot.addr = document.getElementById('d-addr').value.trim();
+  spot.note = document.getElementById('d-note').value.trim();
+  spot.detailNote = document.getElementById('d-detail-note').value;
+  spot.type = document.getElementById('d-type').value;
+  const badgeRaw = document.getElementById('d-badge').value;
+  spot.badge = badgeRaw ? badgeRaw.split(',') : [];
+  closeDetail();
+  render();
+}
+
+function onDetailMainImgUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const spot = ALL_SPOTS.find(s => s.id === detailSpotId);
+    if (spot) spot.img = e.target.result;
+    const inner = document.getElementById('detail-main-img-inner');
+    inner.innerHTML = `<img src="${e.target.result}" style="width:100%;max-height:180px;object-fit:cover;border:1px solid var(--border);filter:sepia(8%);display:block;">`;
+  };
+  reader.readAsDataURL(file);
+  input.value = '';
+}
+
+function renderDetailExtraImgs(spot) {
+  const container = document.getElementById('detail-extra-imgs');
+  container.innerHTML = (spot.extraImgs||[]).map((item, i) => {
+    const src   = typeof item === 'string' ? item : item.src;
+    const label = typeof item === 'string' ? '' : (item.label || '');
+    return `<div class="thumb-wrap">
+      <img src="${src}" alt="${label}">
+      ${label ? `<div class="thumb-label">${label}</div>` : ''}
+      <button class="rm-btn" onclick="removeDetailImg(${i})">✕</button>
+    </div>`;
+  }).join('');
+}
+function removeDetailImg(idx) {
+  const spot = ALL_SPOTS.find(s => s.id === detailSpotId);
+  if (!spot) return;
+  spot.extraImgs.splice(idx, 1);
+  renderDetailExtraImgs(spot);
+}
+function onDetailImgUpload(input) {
+  const spot = ALL_SPOTS.find(s => s.id === detailSpotId);
+  if (!spot) return;
+  if (!spot.extraImgs) spot.extraImgs = [];
+  Array.from(input.files).forEach(file => {
+    const label = file.name;
+    const reader = new FileReader();
+    reader.onload = e => {
+      spot.extraImgs.push({ src: e.target.result, label });
+      renderDetailExtraImgs(spot);
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value = '';
+}
+function addDetailImgUrl() {
+  const input = document.getElementById('detail-img-url-input');
+  const url = input.value.trim();
+  if (!url) return;
+  const spot = ALL_SPOTS.find(s => s.id === detailSpotId);
+  if (!spot) return;
+  if (!spot.extraImgs) spot.extraImgs = [];
+  // 從 URL 取最後一段當 label
+  const label = decodeURIComponent(url.split('/').pop().split('?')[0]) || url;
+  spot.extraImgs.push({ src: url, label });
+  renderDetailExtraImgs(spot);
+  input.value = '';
+}
+
+function addCustomTypeDetail() {
+  const name = prompt('輸入新類型名稱：');
+  if (!name||!name.trim()) return;
+  const n = name.trim();
+  const color = TAG_COLORS[colorIdx++ % TAG_COLORS.length];
+  CUSTOM_TYPES[n] = color;
+  const style = document.createElement('style');
+  style.textContent = `.tag-${CSS.escape(n)} { background: ${color}; }`;
+  document.head.appendChild(style);
+  ['f-type','d-type'].forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    const opt = document.createElement('option');
+    opt.value = n; opt.textContent = n;
+    sel.appendChild(opt);
+    sel.value = n;
+  });
+}
+function addCustomBadgeDetail() {
+  const name = prompt('輸入新標籤名稱：');
+  if (!name||!name.trim()) return;
+  const n = name.trim();
+  ['f-badge','d-badge'].forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    const opt = document.createElement('option');
+    opt.value = n; opt.textContent = n;
+    sel.appendChild(opt);
+    sel.value = n;
+  });
+  const style = document.createElement('style');
+  style.textContent = `.badge-${CSS.escape(n)} { background:#e8e0f0; color:#4a3a6a; border:1px solid #c0b0d8; }`;
+  document.head.appendChild(style);
+}
+
+// Close overlays on bg click
+document.getElementById('modal-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+document.getElementById('detail-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeDetail();
+});
+
+function onCoverUpload(dayId, input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const day = days.find(d => d.id === dayId);
+    if (day) { day.coverImg = e.target.result; render(); }
+  };
+  reader.readAsDataURL(file);
+}
+
+function togglePool() {
+  poolCollapsed = !poolCollapsed;
+  render();
+}
+
+function onHeaderBgUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const header = document.getElementById('site-header');
+    const img = document.getElementById('header-bg-img');
+    img.src = e.target.result;
+    img.style.display = 'block';
+    header.classList.add('has-bg');
+    // 切換按鈕樣式
+    const btn = document.getElementById('header-bg-upload-btn');
+    btn.textContent = '更換封面背景';
+    btn.className = 'header-bg-btn editor-only';
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── Lightbox ──────────────────────────────────────────────
+let lightboxSpotId = null;
+let lightboxIndex  = 0;
+
+function openLightbox(spotId, idx) {
+  lightboxSpotId = spotId;
+  lightboxIndex  = idx;
+  showLightboxAt(idx);
+  document.getElementById('lightbox-overlay').classList.add('open');
+}
+function closeLightbox() {
+  document.getElementById('lightbox-overlay').classList.remove('open');
+}
+function lightboxNav(dir) {
+  const spot = ALL_SPOTS.find(s => s.id === lightboxSpotId);
+  if (!spot) return;
+  const imgs = (spot.extraImgs||[]).map(item =>
+    typeof item === 'string' ? { src: item, label: '' } : item
+  );
+  lightboxIndex = (lightboxIndex + dir + imgs.length) % imgs.length;
+  showLightboxAt(lightboxIndex);
+}
+function showLightboxAt(idx) {
+  const spot = ALL_SPOTS.find(s => s.id === lightboxSpotId);
+  if (!spot) return;
+  const imgs = (spot.extraImgs||[]).map(item =>
+    typeof item === 'string' ? { src: item, label: '' } : item
+  );
+  const item = imgs[idx];
+  document.getElementById('lightbox-img').src    = item.src;
+  document.getElementById('lightbox-label').textContent   = item.label || '';
+  document.getElementById('lightbox-counter').textContent = `${idx+1} / ${imgs.length}`;
+}
+document.getElementById('lightbox-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeLightbox();
+});
+document.addEventListener('keydown', e => {
+  const lb = document.getElementById('lightbox-overlay');
+  if (!lb.classList.contains('open')) return;
+  if (e.key === 'ArrowRight') lightboxNav(1);
+  if (e.key === 'ArrowLeft')  lightboxNav(-1);
+  if (e.key === 'Escape')     closeLightbox();
+});
+
+// ── AI 批次輸入 ──────────────────────────────────────────
+function openAiInput() {
+  document.getElementById('ai-input-overlay').classList.add('open');
+  document.getElementById('ai-batch-input').value = '';
+  document.getElementById('ai-batch-status').textContent = '';
+  setTimeout(() => document.getElementById('ai-batch-input').focus(), 100);
+}
+function closeAiInput() {
+  document.getElementById('ai-input-overlay').classList.remove('open');
+}
+document.getElementById('ai-input-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeAiInput();
+});
+
+async function runAiBatchParse() {
+  const raw = document.getElementById('ai-batch-input').value.trim();
+  if (!raw) return;
+
+  const btn = document.getElementById('ai-parse-btn');
+  const status = document.getElementById('ai-batch-status');
+  btn.disabled = true;
+  btn.textContent = '解析中…';
+  status.textContent = '';
+
+  try {
+    const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
+    let added = 0;
+
+    // 已知類型清單，用來輔助辨識
+    const knownTypes = ['美食','甜點','飲料','點心','伴手禮','逛街','景點'];
+
+    lines.forEach(line => {
+      // 支援中文頓號、逗號、斜線分隔
+      const parts = line.split(/[、,，]/).map(p => p.trim());
+      if (parts.length < 1 || !parts[0]) return;
+
+      const name  = parts[0] || '';
+      const addr  = parts[1] || '';
+      const type  = parts[2] || '景點';
+      const note  = parts[3] || '';
+
+      // 自動判斷 badge
+      const badge = [];
+      const allText = line;
+      if (/連鎖/.test(allText)) badge.push('連鎖');
+      if (/外送/.test(allText)) badge.push('外送');
+
+      const id = 's' + Date.now() + Math.random().toString(36).slice(2,6);
+      ALL_SPOTS.push({
+        id, name, type,
+        badge, addr, note,
+        img: null, detailNote: '', extraImgs: []
+      });
+      pool.push(id);
+      added++;
+    });
+
+    status.style.color = '#4a9a4a';
+    status.textContent = `✓ 成功加入 ${added} 個景點`;
+    render();
+    setTimeout(closeAiInput, 1200);
+  } catch (err) {
+    status.style.color = '#c0392b';
+    status.textContent = '解析失敗，請檢查格式後重試。';
+    console.error(err);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '✦ 解析並加入';
+  }
+}
+
+function downloadHtml() {
+  // 把目前的 ALL_SPOTS、days、pool 序列化成新的資料區塊
+  const spotsJson = JSON.stringify(ALL_SPOTS, null, 2);
+  const daysJson  = JSON.stringify(days, null, 2);
+  const poolJson  = JSON.stringify(pool);
+
+  // 取得當前整個 HTML
+  let html = document.documentElement.outerHTML;
+
+  // 替換 ALL_SPOTS 資料
+  html = html.replace(
+    /const ALL_SPOTS = \[[\s\S]*?\];/,
+    `const ALL_SPOTS = ${spotsJson};`
+  );
+  // 替換 days
+  html = html.replace(
+    /let days = \[[\s\S]*?\];/,
+    `let days = ${daysJson};`
+  );
+  // 替換 pool（單行）
+  html = html.replace(
+    /let pool = ALL_SPOTS\.map\(s=>s\.id\)\.filter\(id => !days\.flatMap\(d=>d\.spots\)\.includes\(id\)\);/,
+    `let pool = ${poolJson};`
+  );
+
+  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'index.html';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+// ── 分頁切換 ──────────────────────────────────────────────
+let currentPage   = 'itinerary';
+// 篩選狀態
+let fAssigned     = 'all';        // 'all' | 'yes' | 'no'
+let fDays         = new Set();    // Set of dayId，空 = 全選
+let fTypes        = new Set();    // Set of type，空 = 全選
+let fSupport      = new Set();    // Set of '連鎖'|'外送'，空 = 不限
+
+// Day 顏色池
+const DAY_COLORS = ['#c0392b','#8e44ad','#2471a3','#148f77','#b7950b','#784212','#616a6b','#1a5276','#6e2f1a','#196f3d'];
+
+function switchPage(page) {
+  currentPage = page;
+  document.getElementById('itinerary-page').classList.toggle('hidden', page !== 'itinerary');
+  document.getElementById('browse-page').classList.toggle('active', page === 'browse');
+  document.getElementById('tab-itinerary').classList.toggle('active', page === 'itinerary');
+  document.getElementById('tab-browse').classList.toggle('active', page === 'browse');
+  if (page === 'browse') renderBrowse();
+}
+
+function toggleAssigned(val) {
+  fAssigned = val;
+  document.querySelectorAll('#chips-assigned .filter-chip').forEach(b =>
+    b.classList.toggle('active', b.dataset.val === val));
+  renderBrowse();
+}
+
+function toggleDayFilter(dayId) {
+  if (dayId === 'all') { fDays.clear(); }
+  else {
+    fDays.has(dayId) ? fDays.delete(dayId) : fDays.add(dayId);
+  }
+  const allBtn = document.querySelector('#chips-day [data-val="all"]');
+  if (allBtn) allBtn.classList.toggle('active', fDays.size === 0);
+  document.querySelectorAll('#chips-day [data-val]:not([data-val="all"])').forEach(b =>
+    b.classList.toggle('active', fDays.has(b.dataset.val)));
+  renderBrowse();
+}
+
+function toggleType(val) {
+  if (val === 'all') { fTypes.clear(); }
+  else {
+    fTypes.has(val) ? fTypes.delete(val) : fTypes.add(val);
+  }
+  const allBtn = document.querySelector('#chips-type [data-val="all"]');
+  if (allBtn) allBtn.classList.toggle('active', fTypes.size === 0);
+  document.querySelectorAll('#chips-type [data-val]:not([data-val="all"])').forEach(b =>
+    b.classList.toggle('active', fTypes.has(b.dataset.val)));
+  renderBrowse();
+}
+
+function toggleSupport(val) {
+  fSupport.has(val) ? fSupport.delete(val) : fSupport.add(val);
+  document.querySelectorAll('#chips-support .filter-chip').forEach(b =>
+    b.classList.toggle('active', fSupport.has(b.dataset.val)));
+  renderBrowse();
+}
+
+function renderBrowse() {
+  // ── 更新 Day chips ──
+  const dayChips = document.getElementById('chips-day');
+  const dayRow   = document.getElementById('filter-row-day');
+  dayChips.innerHTML = '';
+  if (days.length > 0) {
+    dayRow.style.display = '';
+    const allBtn = document.createElement('button');
+    allBtn.className = 'filter-chip' + (fDays.size === 0 ? ' active' : '');
+    allBtn.textContent = '全部'; allBtn.dataset.val = 'all';
+    allBtn.onclick = () => toggleDayFilter('all');
+    dayChips.appendChild(allBtn);
+    days.forEach((day, idx) => {
+      const color = DAY_COLORS[idx % DAY_COLORS.length];
+      const btn = document.createElement('button');
+      btn.className = 'filter-chip day-chip' + (fDays.has(day.id) ? ' active' : '');
+      btn.style.setProperty('--dc', color);
+      btn.textContent = `Day ${idx+1}${day.date ? ' '+day.date : ''}`;
+      btn.dataset.val = day.id;
+      btn.onclick = () => toggleDayFilter(day.id);
+      dayChips.appendChild(btn);
+    });
+  } else {
+    dayRow.style.display = 'none';
+  }
+
+  // ── 更新類型 chips（動態補缺） ──
+  const typeBar  = document.getElementById('chips-type');
+  const allTypes = [...new Set(ALL_SPOTS.map(s => s.type))];
+  allTypes.forEach(t => {
+    if (!typeBar.querySelector(`[data-val="${CSS.escape(t)}"]`)) {
+      const btn = document.createElement('button');
+      btn.className = 'filter-chip' + (fTypes.has(t) ? ' active' : '');
+      btn.textContent = t; btn.dataset.val = t;
+      btn.onclick = () => toggleType(t);
+      typeBar.appendChild(btn);
+    }
+  });
+  // 同步 active 狀態
+  typeBar.querySelector('[data-val="all"]').classList.toggle('active', fTypes.size === 0);
+
+  // ── 建立 spot→day 映射 ──
+  const spotDayMap = {};
+  days.forEach((day, idx) => {
+    day.spots.forEach(id => { spotDayMap[id] = { dayId: day.id, dayNum: idx+1, color: DAY_COLORS[idx % DAY_COLORS.length] }; });
+  });
+
+  // ── 篩選 ──
+  let spots = [...ALL_SPOTS];
+
+  // 是否安排
+  if (fAssigned === 'yes') spots = spots.filter(s => spotDayMap[s.id]);
+  else if (fAssigned === 'no') spots = spots.filter(s => !spotDayMap[s.id]);
+
+  // 安排時間（Day）
+  if (fDays.size > 0) spots = spots.filter(s => spotDayMap[s.id] && fDays.has(spotDayMap[s.id].dayId));
+
+  // 景點類型（複選）
+  if (fTypes.size > 0) spots = spots.filter(s => fTypes.has(s.type));
+
+  // 店家支援（複選，同時滿足所有選中的）
+  if (fSupport.size > 0) spots = spots.filter(s =>
+    [...fSupport].every(tag => (s.badge||[]).includes(tag)));
+
+  // ── 排序：已排入按 Day 順序，未排入按地址 ──
+  spots.sort((a, b) => {
+    const da = spotDayMap[a.id]; const db = spotDayMap[b.id];
+    if (da && db) return da.dayNum - db.dayNum;
+    if (da) return -1; if (db) return 1;
+    return ((a.addr||'')).localeCompare((b.addr||''), 'zh-TW');
+  });
+
+  // 結果數
+  document.getElementById('browse-count').textContent = `共 ${spots.length} 個景點`;
+
+  // ── 渲染卡片 ──
+  const placeholderEmoji = {'美食':'🍜','甜點':'🍮','飲料':'🧋','伴手禮':'🎁','逛街':'🛍️','點心':'🥞','景點':'📍'};
+
+  document.getElementById('browse-grid').innerHTML = spots.map(spot => {
+    const di = spotDayMap[spot.id];
+    const tagClass = `tag-${spot.type}`;
+    const tagStyle = CUSTOM_TYPES[spot.type] ? `style="background:${CUSTOM_TYPES[spot.type]}"` : '';
+    const badges = (spot.badge||[]).map(b => {
+      const label = b==='連鎖'?'🔁 連鎖':b==='外送'?'📦 外送':b;
+      const cls = b==='連鎖'?'badge-連鎖':b==='外送'?'badge-外送':'badge-custom';
+      return `<span class="spot-badge ${cls}" style="font-size:10px;">${label}</span>`;
+    }).join('');
+    const mapsUrl = spot.addr && spot.addr !== '外送可到'
+      ? `https://uri.amap.com/search?keyword=${encodeURIComponent(spot.name)}&city=上海&src=mypage` : null;
+    const imgHtml = spot.img
+      ? `<img class="browse-card-img" src="${spot.img}" alt="${spot.name}">`
+      : `<div class="browse-card-placeholder">${placeholderEmoji[spot.type]||'📍'}</div>`;
+    const dayBadge = di
+      ? `<span class="browse-day-badge" style="background:${di.color}">Day ${di.dayNum}</span>`
+      : `<span class="browse-unassigned">未排入行程</span>`;
+    return `
+      <div class="browse-card">
+        ${imgHtml}
+        <div class="browse-card-body">
+          <div class="browse-card-top">
+            <span class="spot-tag ${tagClass}" ${tagStyle} style="font-size:10px;">${spot.type}</span>
+            <span class="browse-card-name">${spot.name}</span>
+            ${badges}
+          </div>
+          ${spot.note ? `<div class="browse-card-note">${spot.note}</div>` : ''}
+          ${spot.addr ? `<div style="font-size:11px;color:var(--ink-faint);margin-bottom:4px;">
+            ${mapsUrl ? `<a href="${mapsUrl}" target="_blank" style="color:var(--ink-faint);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--ink-faint)'">📍 ${spot.addr}</a>` : `📍 ${spot.addr}`}
+          </div>` : ''}
+          <div class="browse-card-footer">
+            ${dayBadge}
+            <button class="browse-note-btn" onclick="openNote('${spot.id}')">筆記</button>
+          </div>
+        </div>
+      </div>`;
+  }).join('') || '<div style="color:var(--ink-faint);font-size:13px;padding:20px 0;">沒有符合條件的景點</div>';
+}
+
+// ── 從候補區選取 ──────────────────────────────────────────
+function pickFromPool(spotId) {
+  if (!spotId) return;
+  const spot = ALL_SPOTS.find(s => s.id === spotId);
+  if (!spot) return;
+  document.getElementById('f-name').value  = spot.name;
+  document.getElementById('f-addr').value  = spot.addr || '';
+  document.getElementById('f-note').value  = spot.note || '';
+  document.getElementById('f-type').value  = spot.type || '景點';
+  const bv = (spot.badge||[]).join(',');
+  document.getElementById('f-badge').value = bv || '';
+  // 記住這個 pool spot，confirmAdd 時從 pool 移除而不是新增
+  document.getElementById('f-pool-pick').dataset.pickedId = spotId;
+}
+
+// 更新候補區下拉選項
+function refreshPoolPicker() {
+  const sel = document.getElementById('f-pool-pick');
+  if (!sel) return;
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">── 選擇候補區景點 ──</option>';
+  pool.forEach(id => {
+    const spot = ALL_SPOTS.find(s => s.id === id);
+    if (!spot) return;
+    const opt = document.createElement('option');
+    opt.value = id;
+    opt.textContent = `${spot.name}　${spot.type}`;
+    sel.appendChild(opt);
+  });
+  if (cur) sel.value = cur;
+}
+
+// ── Pool 排序（按地址）──────────────────────────────────
+function sortPool() {
+  pool.sort((a, b) => {
+    const sa = ALL_SPOTS.find(s => s.id === a);
+    const sb = ALL_SPOTS.find(s => s.id === b);
+    return ((sa&&sa.addr)||'').localeCompare((sb&&sb.addr)||'', 'zh-TW');
+  });
+}
+
+// ── Init ──────────────────────────────────────────────
+function setMode(mode) {
+  if (mode === 'viewer') {
+    document.body.classList.add('viewer-mode');
+    document.getElementById('btn-viewer').classList.add('active');
+    document.getElementById('btn-editor').classList.remove('active');
+  } else {
+    document.body.classList.remove('viewer-mode');
+    document.getElementById('btn-editor').classList.add('active');
+    document.getElementById('btn-viewer').classList.remove('active');
+  }
+}
+
+render();
+</script>
+</body>
+</html>
